@@ -1,5 +1,6 @@
 package com.example.android_project.service;
 
+import com.example.android_project.dto.CustomOAuth2User;
 import com.example.android_project.repository.UserRepository;
 import com.example.android_project.dto.GoogleResponseDTO;
 import com.example.android_project.dto.KakaoResponseDTO;

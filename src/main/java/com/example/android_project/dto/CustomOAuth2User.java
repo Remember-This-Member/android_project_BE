@@ -1,4 +1,4 @@
-package com.example.android_project.service;
+package com.example.android_project.dto;
 
 import com.example.android_project.dto.UserDTO;
 import java.util.Collection;
