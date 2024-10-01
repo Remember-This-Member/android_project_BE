@@ -1,7 +1,8 @@
 package com.example.android_project.service;
 
-import com.example.android_project.UserRepository;
+import com.example.android_project.repository.UserRepository;
 import com.example.android_project.dto.GoogleResponseDTO;
+import com.example.android_project.dto.KakaoResponseDTO;
 import com.example.android_project.dto.NaverResponseDTO;
 import com.example.android_project.dto.OAuth2ResponseDTO;
 import com.example.android_project.dto.UserDTO;
@@ -37,6 +38,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         else if (registrationId.equals("google")) {
 
             oAuth2ResponseDTO = new GoogleResponseDTO(oAuth2User.getAttributes());
+        }
+        else if (registrationId.equals("kakao")) {
+
+            oAuth2ResponseDTO = new KakaoResponseDTO(oAuth2User.getAttributes());
         }
         else {
 
