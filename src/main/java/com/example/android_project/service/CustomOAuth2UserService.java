@@ -56,14 +56,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setUsername(username);
             userEntity.setEmail(oAuth2ResponseDTO.getEmail());
             userEntity.setName(oAuth2ResponseDTO.getName());
-            userEntity.setRole("ROLE_USER");
 
             userRepository.save(userEntity);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);
             userDTO.setName(oAuth2ResponseDTO.getName());
-            userDTO.setRole("ROLE_USER");
 
             return new CustomOAuth2User(userDTO);
         }
@@ -77,7 +75,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(existData.getUsername());
             userDTO.setName(oAuth2ResponseDTO.getName());
-            userDTO.setRole(existData.getRole());
 
             return new CustomOAuth2User(userDTO);
         }
