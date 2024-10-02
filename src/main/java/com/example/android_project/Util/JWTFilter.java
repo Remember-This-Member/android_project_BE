@@ -25,17 +25,8 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
-        String authorization = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-
-            //System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
-
-                authorization = cookie.getValue();
-            }
-        }
+        //request에서 Authorization 헤더를 찾음
+        String authorization= request.getHeader("Authorization");
 
         //Authorization 헤더 검증
         if (authorization == null) {
@@ -47,8 +38,8 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        //토큰
-        String token = authorization;
+        // 토큰 추출
+        String token = authorization.split(" ")[1];
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
