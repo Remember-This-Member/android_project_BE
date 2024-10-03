@@ -7,7 +7,7 @@ import com.example.android_project.dto.KakaoResponseDTO;
 import com.example.android_project.dto.NaverResponseDTO;
 import com.example.android_project.dto.OAuth2ResponseDTO;
 import com.example.android_project.dto.UserDTO;
-import com.example.android_project.entity.UserEntity;
+import com.example.android_project.entity.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -49,16 +49,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
         String username = oAuth2ResponseDTO.getProvider()+" "+oAuth2ResponseDTO.getProviderId();
-        UserEntity existData = userRepository.findByUsername(username);
+        User existData = userRepository.findByUsername(username);
 
         if (existData == null) {
 
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
-            userEntity.setEmail(oAuth2ResponseDTO.getEmail());
-            userEntity.setName(oAuth2ResponseDTO.getName());
+            User user = User.builder()
+                .username(username)
+                .email(oAuth2ResponseDTO.getEmail())
+                .name(oAuth2ResponseDTO.getName())
+                .build();
 
-            userRepository.save(userEntity);
+            userRepository.save(user);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);
@@ -68,8 +69,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         else {
 
-            existData.setEmail(oAuth2ResponseDTO.getEmail());
-            existData.setName(oAuth2ResponseDTO.getName());
+            existData.changeemail(oAuth2ResponseDTO.getEmail());
+            existData.changename(oAuth2ResponseDTO.getName());
 
             userRepository.save(existData);
 

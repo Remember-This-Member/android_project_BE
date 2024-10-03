@@ -1,9 +1,9 @@
 package com.example.android_project.repository;
 
-import com.example.android_project.entity.UserEntity;
+import com.example.android_project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 }

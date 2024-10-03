@@ -1,17 +1,27 @@
 package com.example.android_project.controller;
 
+import com.example.android_project.dto.SignupRequestDTO;
+import com.example.android_project.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     // 쿠키에 담긴 토큰을 반환하는 로직
     @GetMapping("/token")
@@ -38,5 +48,12 @@ public class AuthController {
         headers.add("Authorization", jwtToken);
 
         return ResponseEntity.ok().headers(headers).build();
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> registerUser(@RequestBody SignupRequestDTO signupRequestDTO) {
+
+        String nickname = authService.registerUser(signupRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nickname);
     }
 }
