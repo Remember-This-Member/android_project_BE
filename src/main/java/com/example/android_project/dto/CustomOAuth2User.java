@@ -2,6 +2,7 @@ package com.example.android_project.dto;
 
 import com.example.android_project.dto.UserDTO;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,14 +29,13 @@ public class CustomOAuth2User implements OAuth2User {
         return userDTO.getName();
     }
 
-    public String getUsername() {
-
-        return userDTO.getUsername();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of();
+        return Collections.emptyList();
+    }
+
+    public String getProviderId() {
+        return userDTO.getProviderId();
     }
 }

@@ -22,9 +22,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String provider;
 
-    private String name;
+    private String providerId;
 
     private String email;
 
@@ -32,10 +32,6 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     private UserProfile userProfile;
-
-    public void changename(String name){
-        this.name=name;
-    }
 
     public void changeemail(String email){
         this.email=email;

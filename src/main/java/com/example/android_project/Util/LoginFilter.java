@@ -1,12 +1,15 @@
 package com.example.android_project.Util;
 
 import com.example.android_project.dto.CustomUserDetails;
+import com.example.android_project.dto.ResponseMap;
 import com.example.android_project.dto.SignInRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.gson.Gson;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,12 +36,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         try {
             signInRequestDTO = objectMapper.readValue(request.getInputStream(), SignInRequestDTO.class);
-            //클라이언트 요청에서 username, password 추출
-            String username = signInRequestDTO.getId(); // username
+            //클라이언트 요청에서 id, password 추출
+            String id = signInRequestDTO.getId(); // id
             String password = signInRequestDTO.getPassword(); // password
 
-            //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+            //스프링 시큐리티에서 id와 password를 검증하기 위해서는 token에 담아야 함
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(id, password);
             //token에 담은 검증을 위한 AuthenticationManager로 전달
             return authenticationManager.authenticate(authToken);
         } catch (IOException e) {
@@ -53,23 +56,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //UserDetailsS
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        String username = customUserDetails.getUsername();
-        String nickname = customUserDetails.getNickname();
+        String providerId = customUserDetails.getProviderId();
 
-        String token = jwtUtil.createJwt(username, 60*60*10L);
+        String token = jwtUtil.createJwt(providerId, 60*60*10L);
 
-        // 토큰 로그 확인
-        //System.out.println("Generated JWT Token: " + token);
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        // 응답 본문에 닉네임 추가
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        // 응답 본문에 닉네임 추가 (Gson을 사용한 방식으로 변경)
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);  // JSON 응답을 위해 Content-Type 설정
+        response.setStatus(HttpServletResponse.SC_OK);  // HTTP 상태 코드 200 설정
 
+        // 응답 본문에 닉네임 추가
+        Gson gson = new Gson();
+        ResponseMap responseMap = new ResponseMap();  // 메시지를 담을 맵 생성
+        responseMap.put("providerId", providerId);  // 닉네임 추가
+
+        // JSON 응답 전송
         try {
-            // JSON 형태로 nickname 응답
-            response.getWriter().write("{\"nickname\": \"" + nickname + "\"}");
+            response.getWriter().write(gson.toJson(responseMap.getMap()));  // Gson을 이용해 Map을 JSON 문자열로 변환하여 응답
         } catch (IOException e) {
             throw new RuntimeException("응답 실패", e);
         }

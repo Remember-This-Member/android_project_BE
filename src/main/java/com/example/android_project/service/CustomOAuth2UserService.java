@@ -1,6 +1,7 @@
 package com.example.android_project.service;
 
 import com.example.android_project.dto.CustomOAuth2User;
+import com.example.android_project.entity.UserProfile;
 import com.example.android_project.repository.UserRepository;
 import com.example.android_project.dto.GoogleResponseDTO;
 import com.example.android_project.dto.KakaoResponseDTO;
@@ -28,7 +29,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        //System.out.println(oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2ResponseDTO oAuth2ResponseDTO = null;
@@ -48,21 +48,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             return null;
         }
-        String username = oAuth2ResponseDTO.getProvider()+" "+oAuth2ResponseDTO.getProviderId();
-        User existData = userRepository.findByUsername(username);
+        String provider = oAuth2ResponseDTO.getProvider();
+        String providerId = oAuth2ResponseDTO.getProviderId();
+
+        // 유저가 존재하는지 확인
+        User existData = userRepository.findByProviderId(providerId);
 
         if (existData == null) {
 
+            UserProfile userProfile = UserProfile.builder()
+                .nickname(oAuth2ResponseDTO.getName())
+                .build();
+
             User user = User.builder()
-                .username(username)
+                .provider(provider)
+                .providerId(providerId)
                 .email(oAuth2ResponseDTO.getEmail())
-                .name(oAuth2ResponseDTO.getName())
+                .userProfile(userProfile)
                 .build();
 
             userRepository.save(user);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
+            userDTO.setProviderId(providerId);
             userDTO.setName(oAuth2ResponseDTO.getName());
 
             return new CustomOAuth2User(userDTO);
@@ -70,12 +78,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         else {
 
             existData.changeemail(oAuth2ResponseDTO.getEmail());
-            existData.changename(oAuth2ResponseDTO.getName());
 
             userRepository.save(existData);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
+            userDTO.setProviderId(providerId);
             userDTO.setName(oAuth2ResponseDTO.getName());
 
             return new CustomOAuth2User(userDTO);

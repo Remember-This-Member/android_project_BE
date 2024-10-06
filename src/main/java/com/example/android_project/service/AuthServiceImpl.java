@@ -21,7 +21,7 @@ public class AuthServiceImpl implements AuthService {
 
     public String registerUser(SignupRequestDTO signupRequestDTO) {
         // 이미 존재하는 사용자 확인
-        if (userRepository.findByUsername(signupRequestDTO.getId()) != null) {
+        if (userRepository.findByProviderId(signupRequestDTO.getId()) != null) {
             throw new RuntimeException("이미 존재하는 ID입니다.");
         }
 
@@ -32,8 +32,8 @@ public class AuthServiceImpl implements AuthService {
 
         // 새 사용자 생성
         User user = User.builder()
-            .username(signupRequestDTO.getId())
-            .name(signupRequestDTO.getNickname())
+            .provider("local")
+            .providerId(signupRequestDTO.getId())
             .email(signupRequestDTO.getEmail())
             .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
             .userProfile(userProfile)
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     public String signinUser(SignInRequestDTO signInRequestDTO) {
 
-        User user = userRepository.findByUsername(signInRequestDTO.getId());
+        User user = userRepository.findByProviderId(signInRequestDTO.getId());
 
         if (user == null) {
             throw new RuntimeException("회원 정보가 없습니다.");
