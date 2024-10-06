@@ -1,10 +1,11 @@
 package com.example.android_project.controller;
 
-import com.example.android_project.dto.SignInRequestDTO;
+import com.example.android_project.dto.ResponseMap;
 import com.example.android_project.dto.SignupRequestDTO;
 import com.example.android_project.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,16 +53,14 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody SignupRequestDTO signupRequestDTO) {
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody SignupRequestDTO signupRequestDTO) {
 
-        String nickname = authService.registerUser(signupRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nickname);
-    }
+        Long userId = authService.registerUser(signupRequestDTO);
 
-    @PostMapping("/signin")
-    public ResponseEntity<String> singinUser(@RequestBody SignInRequestDTO signInRequestDTO) {
+        ResponseMap responseMap=new ResponseMap();
+        responseMap.put("message", "회원가입에 성공했습니다.");
+        responseMap.put("userId", userId);
 
-        String nickname = authService.signinUser(signInRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(nickname);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseMap.getMap());
     }
 }

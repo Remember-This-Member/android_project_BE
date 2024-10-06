@@ -19,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String registerUser(SignupRequestDTO signupRequestDTO) {
+    public Long registerUser(SignupRequestDTO signupRequestDTO) {
         // 이미 존재하는 사용자 확인
         if (userRepository.findByProviderId(signupRequestDTO.getId()) != null) {
             throw new RuntimeException("이미 존재하는 ID입니다.");
@@ -42,10 +42,10 @@ public class AuthServiceImpl implements AuthService {
         // 사용자 저장
         userRepository.save(user);
 
-        return user.getUserProfile().getNickname();
+        return user.getUserProfile().getId();
     }
 
-    public String signinUser(SignInRequestDTO signInRequestDTO) {
+    public UserProfile signinUser(SignInRequestDTO signInRequestDTO) {
 
         User user = userRepository.findByProviderId(signInRequestDTO.getId());
 
@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("비밀번호가 잘못되었습니다.");
         }
 
-        return user.getUserProfile().getNickname();
+        return user.getUserProfile();
     }
 
 }

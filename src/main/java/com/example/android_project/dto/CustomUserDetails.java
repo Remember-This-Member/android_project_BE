@@ -1,6 +1,7 @@
 package com.example.android_project.dto;
 
 import com.example.android_project.entity.User;
+import com.example.android_project.entity.UserProfile;
 import java.util.Collection;
 import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,13 +58,13 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public String getNickname() {
-
-        return user.getUserProfile().getNickname();
-    }
-
     public String getProviderId() {
 
         return user.getProviderId();
+    }
+
+    public UserProfile getUserProfile() {
+
+        return user.getUserProfile();
     }
 }

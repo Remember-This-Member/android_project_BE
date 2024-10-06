@@ -63,14 +63,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        // 응답 본문에 닉네임 추가 (Gson을 사용한 방식으로 변경)
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);  // JSON 응답을 위해 Content-Type 설정
+        // 응답 본문에 userProfile 추가 (Gson을 사용한 방식으로 변경)
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");  // JSON 응답을 위해 Content-Type과 Charset 설정
+        response.setCharacterEncoding("UTF-8");  // 문자 인코딩을 UTF-8로 설정
         response.setStatus(HttpServletResponse.SC_OK);  // HTTP 상태 코드 200 설정
 
-        // 응답 본문에 닉네임 추가
+        // 응답 본문에 userProfile 추가
         Gson gson = new Gson();
         ResponseMap responseMap = new ResponseMap();  // 메시지를 담을 맵 생성
-        responseMap.put("providerId", providerId);  // 닉네임 추가
+        responseMap.put("userProfile", customUserDetails.getUserProfile());  // userProfile 추가
 
         // JSON 응답 전송
         try {
