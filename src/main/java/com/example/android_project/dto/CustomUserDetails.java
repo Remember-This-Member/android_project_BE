@@ -57,4 +57,8 @@ public class CustomUserDetails implements UserDetails {
 
         return true;
     }
+
+    public String getNickname() {
+        return userEntity.getUserProfile().getNickname();
+    }
 }

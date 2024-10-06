@@ -83,7 +83,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/api/token", "/api/auth/signup").permitAll()
+                .requestMatchers("/", "/api/token", "/api/auth/signup", "/api/auth/signin").permitAll()
                 .anyRequest().authenticated());
 
         //세션 설정 : STATELESS

@@ -1,5 +1,6 @@
 package com.example.android_project.service;
 
+import com.example.android_project.dto.SignInRequestDTO;
 import com.example.android_project.dto.SignupRequestDTO;
 import com.example.android_project.entity.User;
 import com.example.android_project.entity.UserProfile;
@@ -44,5 +45,17 @@ public class AuthServiceImpl implements AuthService {
         return user.getUserProfile().getNickname();
     }
 
+    public String signinUser(SignInRequestDTO signInRequestDTO) {
+
+        User user = userRepository.findByUsername(signInRequestDTO.getId());
+
+        if (user == null) {
+            throw new RuntimeException("회원 정보가 없습니다.");
+        } else if (!passwordEncoder.matches(signInRequestDTO.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 잘못되었습니다.");
+        }
+
+        return user.getUserProfile().getNickname();
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.android_project.controller;
 
+import com.example.android_project.dto.SignInRequestDTO;
 import com.example.android_project.dto.SignupRequestDTO;
 import com.example.android_project.service.AuthService;
 import jakarta.servlet.http.Cookie;
@@ -55,5 +56,12 @@ public class AuthController {
 
         String nickname = authService.registerUser(signupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nickname);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<String> singinUser(@RequestBody SignInRequestDTO signInRequestDTO) {
+
+        String nickname = authService.signinUser(signInRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(nickname);
     }
 }
